@@ -1,23 +1,22 @@
 {
-  "name": "my-app",
+  "name": "kbo-back",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "bcryptjs": "^2.4.3",
-    "dotenv": "^16.4.5",
+    "@types/node": "^22.0.0",
+    "axios": "^1.7.2",
+    "cheerio": "^1.0.0-rc.12",
+    "csv-parser": "^3.0.0",
     "express": "^4.19.2",
-    "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.5.2"
-  },
-  "devDependencies": {
-    "nodemon": "^3.1.4"
+    "mongodb": "^6.8.0",
+    "mongoose": "^8.5.1"
   }
 }
