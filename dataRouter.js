@@ -441,4 +441,15 @@ router.get('/search/by-entity-number/activity/:entityNumber', async (req, res, n
     next(error);
   }
 });
+
+// Route pour récupérer les 20 premières entreprises
+router.get('/enterprises/top20', async (req, res, next) => {
+  try {
+    const topEnterprises = await Enterprise.find().limit(20);
+    res.json(topEnterprises);
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = router;
