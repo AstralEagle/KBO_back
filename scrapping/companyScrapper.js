@@ -128,6 +128,5 @@ function extractGeneral($, website) {
     };
 }
 
-companyScrapper("0885863782")
 
 module.exports = companyScrapper;
