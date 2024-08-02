@@ -79,9 +79,6 @@ sampleData('dataset/denomination.csv', () => {
             await company.save();
             console.log(`Company ${companyData.companyNumber} saved successfully`);
             savedCount++;
-            if (savedCount >= TARGET_COMPANIES) {
-              break;
-            }
           } catch (error) {
             console.error(`Error saving company ${companyData.companyNumber}:`, error.message);
           }
