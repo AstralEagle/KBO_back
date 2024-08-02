@@ -16,7 +16,19 @@ router.get('/search/number/:companyNumber', async (req, res) => {
     res.status(500).send('Server Error');
   }
 });
-
+// Rechercher par numéro d'entreprise via scrapping
+router.get('/search/scrapping/:companyNumber', async (req, res) => {
+  try {
+    const company = await companyScrapper(req.params.companyNumber);
+    if (!company) {
+      return res.status(404).json({ msg: 'Company not found' });
+    }
+    res.json(company);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
 // Rechercher par numéro d'entreprise via scrapping
 router.get('/search/scrapping/:companyNumber', async (req, res) => {
   try {
