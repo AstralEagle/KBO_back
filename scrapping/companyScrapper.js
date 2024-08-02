@@ -16,12 +16,10 @@ const companyScrapper = async (companyId) => {
     const $ = cheerio.load(kbopubData);
     const result =  { 
         [ extractGeneral($,'kbopub').enterpriseNumber]: {
-                "name": extractGeneral($,'kbopub').name,
-                "status":extractGeneral($,'kbopub').status,
-                "address":extractGeneral($,'kbopub').address,
-                "startDate":extractGeneral($,'kbopub').startDate
-
-                
+                name: extractGeneral($,'kbopub').name,
+                status:extractGeneral($,'kbopub').status,
+                address:extractGeneral($,'kbopub').address,
+                startDate:extractGeneral($,'kbopub').startDate
             }
         };
         
@@ -41,8 +39,8 @@ const companyScrapper = async (companyId) => {
 
     result[extractGeneral($,'kbopub').enterpriseNumber] = {
         ...result[extractGeneral($,'kbopub').enterpriseNumber],
-        "director": extractGeneral(singleData,'kbopub').gerant,
-        "website": extractGeneral(singleData,'kbopub').website,
+        director: extractGeneral(singleData,'kbopub').gerant,
+        website: extractGeneral(singleData,'kbopub').website,
     
     };
 
@@ -61,18 +59,20 @@ const companyScrapper = async (companyId) => {
     const companywebHtml = cheerio.load(companywebData)
     result[extractGeneral($,'kbopub').enterpriseNumber] = {
         ...result[extractGeneral($,'kbopub').enterpriseNumber],
-        "capital": extractGeneral(companywebHtml,'companyweb').capital ,
+        capital: extractGeneral(companywebHtml,'companyweb').capital ,
+        juridical: extractGeneral(companywebHtml,'companyweb').juridical ,
+
     };
 
-    console.log(result);
 
     return result;
 };
 
-function extractGeneral($,website) {
+function extractGeneral($, website) {
     const years = [];
     const capitals = [];
-
+    let pdfLinks = [];
+    
     if (website == 'companyweb'){
    
         $('thead .title-tab th').each((index, element) => {
@@ -91,6 +91,23 @@ function extractGeneral($,website) {
             });
             }
         });
+
+        const secondTable = $('table.publicaties');
+        pdfLinks = secondTable.find('tbody tr').map((index, row) => {
+            const date = $(row).find('td[data-header="Date"]').text().trim();
+            const pdfUrl = $(row).find('td a.tr-anchor').attr('href');
+            const title = $(row).find('td[data-header="Titre"].title-cell span').first().text().trim().replaceAll('\n\n', '').replaceAll('\n', '').replaceAll('  ', ' ');
+
+            if (pdfUrl && date && title) {
+                const fullUrl = `https://www.companyweb.be/${pdfUrl}`;
+                return {
+                    date,
+                    title,
+                    url: fullUrl
+                };
+            }
+        }).get();
+        
     }
    
 
@@ -106,8 +123,11 @@ function extractGeneral($,website) {
         capital: years.map((year, index) => ({
             year: year,
             capital: capitals[index * 2]
-        })).filter(result => result.capital !== undefined)
+        })).filter(result => result.capital !== undefined),
+        juridical: pdfLinks
     };
 }
+
+companyScrapper("0885863782")
 
 module.exports = companyScrapper;
