@@ -9,8 +9,11 @@ const app = express();
 // Middleware
 app.use(express.json());
 
+
+const uri = 'mongodb://127.0.0.1:27017/kbo_back';
+
 // MongoDB connection
-mongoose.connect(process.env.MONGODB_URI, {
+mongoose.connect(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 }).then(() => console.log('MongoDB connected'))
@@ -18,6 +21,7 @@ mongoose.connect(process.env.MONGODB_URI, {
 
 // Routes
 app.use('/api/users', require('./routes/userRoutes'));
+app.use('/data', require('./routes/companies'));
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

@@ -1,10 +1,11 @@
 const fs = require('fs');
 const mongoose = require('mongoose');
 const csv = require('csv-parser');
-const Company = require('./models/Company'); // Assurez-vous que ce chemin est correct
+const Company = require('./models/Company.model'); // Assurez-vous que ce chemin est correct
 
+const uri = 'mongodb://127.0.0.1:27017/kbo_back';
 // Connexion à MongoDB
-mongoose.connect('mongodb+srv://omarmufti:HA9oHhoasfMVw6zm@cluster0.30sjck4.mongodb.net/kbo?retryWrites=true&w=majority&appName=Cluster0', {
+mongoose.connect(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
@@ -23,8 +24,8 @@ const sampleData = (inputFile, callback) => {
       results.push(row);
     })
     .on('end', () => {
-      const sampled = results.sort(() => 0.5 - Math.random()).slice(0, INITIAL_SAMPLE_SIZE);
-      sampled.forEach(row => companyNumbers.add(row.EntityNumber));
+      // const sampled = results.sort(() => 0.5 - Math.random()).slice(0, INITIAL_SAMPLE_SIZE);
+      results.forEach(row => companyNumbers.add(row.EntityNumber));
       callback();
     });
 };
@@ -55,11 +56,11 @@ const filterData = (inputFile, callback) => {
 };
 
 // Échantillonner les données de denomination.csv
-sampleData('denomination.csv', () => {
+sampleData('dataset/denomination.csv', () => {
   // Filtrer les autres fichiers CSV en utilisant les numéros d'entreprise échantillonnés
-  filterData('denomination.csv', () => {
-    filterData('activity.csv', () => {
-      filterData('address.csv', async () => {
+  filterData('dataset/denomination.csv', () => {
+    filterData('dataset/activity.csv', () => {
+      filterData('dataset/address.csv', async () => {
         console.log('Data filtering complete');
 
         // Sauvegarder les données filtrées dans MongoDB
