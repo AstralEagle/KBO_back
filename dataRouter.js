@@ -382,4 +382,63 @@ router.get('/establishment', async (req, res, next) => {
   }
 });
 
+// Route pour rechercher par EnterpriseNumber dans la table des enterprises
+router.get('/search/by-enterprise-number/:enterpriseNumber', async (req, res, next) => {
+  try {
+    const enterpriseNumber = req.params.enterpriseNumber;
+    const enterprise = await Enterprise.findOne({ EnterpriseNumber: enterpriseNumber });
+    if (enterprise) {
+      res.json(enterprise);
+    } else {
+      res.status(404).send('Enterprise not found');
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Route pour rechercher par Denomination dans la table denominations
+router.get('/search/by-denomination/:denomination', async (req, res, next) => {
+  try {
+    const denomination = req.params.denomination;
+    const denominations = await Denomination.find({ Denomination: new RegExp(denomination, 'i') });
+    if (denominations.length > 0) {
+      res.json(denominations);
+    } else {
+      res.status(404).send('Denomination not found');
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Nouvelle route pour rechercher par EntityNumber dans la table address
+router.get('/search/by-entity-number/address/:entityNumber', async (req, res, next) => {
+  try {
+    const entityNumber = req.params.entityNumber;
+    const addresses = await Address.find({ EntityNumber: entityNumber });
+    if (addresses.length > 0) {
+      res.json(addresses);
+    } else {
+      res.status(404).send('Address not found');
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Nouvelle route pour rechercher par EntityNumber dans la table activity
+router.get('/search/by-entity-number/activity/:entityNumber', async (req, res, next) => {
+  try {
+    const entityNumber = req.params.entityNumber;
+    const activities = await Activity.find({ EntityNumber: entityNumber });
+    if (activities.length > 0) {
+      res.json(activities);
+    } else {
+      res.status(404).send('Activity not found');
+    }
+  } catch (error) {
+    next(error);
+  }
+});
 module.exports = router;
